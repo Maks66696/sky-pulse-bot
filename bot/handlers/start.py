@@ -24,3 +24,4 @@ async def cmd_about(message: Message):
 @router.message(F.text == "ℹ️ О боте")
 async def about_bot(message: Message):
     await message.answer(about_text, parse_mode = "Markdown")
+    

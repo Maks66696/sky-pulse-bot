@@ -1,4 +1,5 @@
-from bot.handlers import start, weather
+from bot.handlers import start, weather, location
+from bot.keyboards import reply, inline
 import asyncio
 import logging
 from config import config
@@ -10,11 +11,13 @@ logging.basicConfig(level=logging.INFO)
 
 
 async def main():
-    dp.include_router(start.router)
-    dp.include_router(weather.router)
-    bot = Bot(token=config.BOT_TOKEN)
     dp = Dispatcher()
     dp.include_router(start.router)
+    dp.include_router(weather.router)
+    dp.include_router(location.router)
+    dp.include_router(reply.router)
+    dp.include_router(inline.router)
+    bot = Bot(token=config.BOT_TOKEN)
     await dp.start_polling(bot)
 
 
