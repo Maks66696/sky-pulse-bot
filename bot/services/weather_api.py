@@ -63,6 +63,7 @@ async def get_city_name(lat: float, lon: float):
                         "lat":lat,
                         "lon":lon,
                         "format": "json",
+                        "accept-language": "ru",
                     },  
                         timeout=5
                 ) as response:

@@ -30,7 +30,7 @@ async def handle_city_search(message: Message):
 @router.callback_query(F.data.startswith("refresh_"))
 async def handle_refresh_callback(call: CallbackQuery):
     await call.answer("🔄 Обновляю данные...")
-    _, lat, lon, city_name = call.data.split("_")
+    _, lat, lon, city_name = call.data.split("_", maxsplit=3)
     lat, lon = float(lat), float(lon)
     data = await get_weather_data(lat, lon)
     if data is None:

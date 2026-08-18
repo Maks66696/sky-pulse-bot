@@ -24,4 +24,10 @@ async def cmd_about(message: Message):
 @router.message(F.text == "ℹ️ О боте")
 async def about_bot(message: Message):
     await message.answer(about_text, parse_mode = "Markdown")
-    
+
+@router.message(F.text == "⭐ Избранное")
+async def cmd_favorites(message: Message):
+    await message.answer(
+        "⭐ Раздел «Избранное» находится в разработке!\n"
+        "Скоро здесь можно будет сохранять свои любимые города."
+    )

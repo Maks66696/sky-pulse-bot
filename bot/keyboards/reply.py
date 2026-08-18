@@ -1,7 +1,4 @@
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
-from aiogram import Router, F
-
-router = Router()
 
 def get_main_reply_keyboard():
     keyboard = ReplyKeyboardMarkup(
