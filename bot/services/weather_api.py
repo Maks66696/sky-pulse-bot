@@ -50,6 +50,39 @@ WEATHER_CODES = {
     95: "🌩️ Гроза",
 }
 
+async def get_city_name(lat: float, lon: float):
+     url = "https://nominatim.openstreetmap.org/reverse"
+     headers = {
+        "User-Agent": "sky-pulse-bot/1.0"
+     }
+     async with aiohttp.ClientSession(headers=headers) as session:
+          try:
+            async with session.get(
+                     url, 
+                     params = { 
+                        "lat":lat,
+                        "lon":lon,
+                        "format": "json",
+                    },  
+                        timeout=5
+                ) as response:
+                    print(response.status)
+                    print("Nominatim status:", response.status)
+                    data = await response.json()
+                    address = data.get("address")
+                    if address is None:
+                         return None
+                    city_name = (
+                         address.get("city")
+                         or address.get("town")
+                         or address.get("village")
+                    )
+                    return city_name
+          except Exception as e:
+            print(type(e).__name__, repr(e))
+            return None
+
+                    
 
 def format_weather_message(data: dict, city_name: str) -> str:
     current = data["current_weather"]
