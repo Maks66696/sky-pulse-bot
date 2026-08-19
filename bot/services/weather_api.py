@@ -25,12 +25,14 @@ async def get_weather_data(lat: float, lon: float):
      url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true&hourly=temperature_2m&forecast_days=1"
      async with aiohttp.ClientSession() as session:
         try:
-               async with session.get(url, timeout=5) as response:
+               async with session.get(url, timeout=10) as response:
                     data = await response.json()
         except Exception:
+                    print(f"❌ Ошибка сети в get_weather_data: {type(e).__name__} - {e}")
                     return None
 
      if "current_weather" not in data or not data["current_weather"]:
+           print(f"❌ Open-Meteo вернул странный ответ: {data}")
            return None
      return data
       
