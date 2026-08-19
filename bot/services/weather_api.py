@@ -27,7 +27,7 @@ async def get_weather_data(lat: float, lon: float):
         try:
                async with session.get(url, timeout=10) as response:
                     data = await response.json()
-        except Exception:
+        except Exception as e:
                     print(f"❌ Ошибка сети в get_weather_data: {type(e).__name__} - {e}")
                     return None
 
