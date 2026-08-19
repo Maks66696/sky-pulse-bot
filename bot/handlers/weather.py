@@ -4,7 +4,7 @@ from aiogram.types import Message, CallbackQuery, BufferedInputFile
 from bot.services.weather_api import get_coordinates, get_weather_data, format_weather_message
 from bot.services.chart import create_chart
 from bot.keyboards.inline import get_weather_inline_keyboard
-
+from bot.database.db import add_favorite_city
 router = Router()
 
 @router.message(F.text)
@@ -51,3 +51,10 @@ async def handle_refresh_callback(call: CallbackQuery):
     await call.message.answer_photo(
         photo=photo, caption=text, parse_mode="Markdown", reply_markup=keyboard
     ) 
+
+@router.callback_query(F.data.startswith("fav_"))
+async def handle_add_favorite_callback(call: CallbackQuery):
+    _, lat, lon, city_name = call.data.split("_", maxsplit=3)
+    lat, lon = float(lat), float(lon)
+    await add_favorite_city(call.from_user.id, city_name, lat, lon)
+    await call.answer("⭐ Город сохранён в избранное!", show_alert=False)

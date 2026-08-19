@@ -2,6 +2,8 @@ from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import Message
 from bot.keyboards.reply import get_main_reply_keyboard
+from bot.database.db import get_user_favorites
+from bot.keyboards.inline import get_favorites_keyboard
 
 router = Router()
 
@@ -27,7 +29,14 @@ async def about_bot(message: Message):
 
 @router.message(F.text == "⭐ Избранное")
 async def cmd_favorites(message: Message):
-    await message.answer(
-        "⭐ Раздел «Избранное» находится в разработке!\n"
-        "Скоро здесь можно будет сохранять свои любимые города."
-    )
+    favorites = await get_user_favorites(message.from_user.id)
+    if not favorites:
+        await message.answer(
+                "⭐ У вас пока нет избранных городов.\n\nНайдите город через поиск и нажмите кнопку «⭐ В избранное» под графиком!"
+            )
+    else:
+        keyboard = get_favorites_keyboard(favorites)
+        await message.answer(
+            "⭐ Ваши избранные города:\nНажмите на город, чтобы посмотреть погоду:", reply_markup=keyboard
+        )
+
