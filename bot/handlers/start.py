@@ -7,14 +7,6 @@ from bot.keyboards.inline import get_favorites_keyboard
 
 router = Router()
 
-about_text = (
-    "🌤️ **SkyPulse Bot **\n\n"
-    "Умный погодный ассистент:\n"
-    "• Точный прогноз в любой точке мира и по GPS 📍\n"
-    "• Автоматическая инфографика и графики на 24 часа 📊\n"
-    "• Подробные данные о ветре и советы по одежде 👕\n\n"
-    "👨‍💻 Разработчик: @твой_юзернейм"
-)
 
 @router.message(F.text == "/start")
 async def cmd_about(message: Message):
@@ -25,6 +17,14 @@ async def cmd_about(message: Message):
 
 @router.message(F.text == "ℹ️ О боте")
 async def about_bot(message: Message):
+    about_text = (
+        "🌤️ *SkyPulse Bot v2.0*\n\n"
+        "Умный погодный ассистент:\n"
+        "• Точный прогноз в любой точке мира и по GPS 📍\n"
+        "• Автоматическая инфографика и графики на 24 часа 📊\n"
+        "• Подробные данные о ветре и советы по одежде 👕\n\n"
+        "👨‍💻 Разработчик: @MaKsIm196E"
+    )
     await message.answer(about_text, parse_mode = "Markdown")
 
 @router.message(F.text == "⭐ Избранное")
