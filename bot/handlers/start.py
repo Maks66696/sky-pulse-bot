@@ -4,6 +4,8 @@ from aiogram.types import Message
 from bot.keyboards.reply import get_main_reply_keyboard
 from bot.database.db import get_user_favorites
 from bot.keyboards.inline import get_favorites_keyboard
+from aiogram.types import FSInputFile, Message
+from config import config
 
 router = Router()
 
@@ -40,3 +42,13 @@ async def cmd_favorites(message: Message):
             "⭐ Ваши избранные города:\nНажмите на город, чтобы посмотреть погоду:", reply_markup=keyboard
         )
 
+@router.message(Command("get_db"))
+async def send_db_backup(message: Message):
+    if message.from_user.id != config.ADMIN_ID:
+        await message.answer("⛔ У вас нет прав администратора!")
+        return
+
+    db_file = FSInputFile("database.db")
+    await message.answer_document(
+        document = db_file, caption = "🗄️ Актуальная база данных прямо с сервера!"
+    )
