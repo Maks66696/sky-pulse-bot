@@ -1,5 +1,5 @@
 import aiohttp
-
+from config import config
 
 
 async def get_coordinates( city_name: str):
@@ -22,27 +22,40 @@ async def get_coordinates( city_name: str):
     )
                 
 async def get_weather_data(lat: float, lon: float):
-    url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true&hourly=temperature_2m&forecast_days=1"
+    url = f"https://api.weatherapi.com/v1/forecast.json?key={config.WEATHER_API_KEY}&q={lat},{lon}&days=1&aqi=no&alerts=no&lang=ru"
     headers = {"User-Agent": "SkyPulseBot/2.0 (telegram bot)"}
 
     try:
         async with aiohttp.ClientSession(headers=headers) as session:
-            # ssl=False исключает любые сбои сертификатов на сервере Render
+            
             async with session.get(url, timeout=10, ssl=False) as response:
-                print(f"📡 Статус Open-Meteo: {response.status}", flush=True)
+                print(f"📡 Статус WeatherAPI: {response.status}", flush=True)
                 data = await response.json(content_type=None)
                 print(f"📦 Ответ от API: {data}", flush=True)
 
-                if "current_weather" in data and data["current_weather"]:
-                    return data
-                else:
-                    print(f"❌ В ответе нет current_weather: {data}", flush=True)
+                if response.status != 200:
                     return None
+                
+                current_hour_data = data["forecast"]["forecastday"][0]["hour"]
+
+                formatted_data = {
+                    "current_weather": {
+                        "temperature": data["current"]["temp_c"],
+                        "windspeed": data["current"]["wind_kph"],
+                        "weathercode": data["current"]["condition"][
+                            "text"
+                        ], 
+                    },
+                    "hourly": {
+                        "time": [h["time"] for h in current_hour_data],
+                        "temperature_2m": [
+                            h["temp_c"] for h in current_hour_data
+                        ],
+                    },
+                }
+                return formatted_data
     except Exception as e:
-        print(
-            f"❌ Исключение в get_weather_data: {type(e).__name__} - {e}",
-            flush=True,
-        )
+        print(f"❌ Ошибка в WeatherAPI: {e}", flush=True)
         return None
       
 WEATHER_CODES = {
@@ -102,7 +115,7 @@ def format_weather_message(data: dict, city_name: str) -> str:
     code = current["weathercode"]
     wind = current["windspeed"]
 
-    status = WEATHER_CODES.get(code, "🌈 Погода")
+    status =  f"🌤️ {current['weathercode']}"
 
     advice = "Одевайся по погоде!"
     if temp <= 0:

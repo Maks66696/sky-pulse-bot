@@ -7,5 +7,6 @@ load_dotenv()
 @dataclass
 class Config:
     BOT_TOKEN: str = os.getenv("BOT_TOKEN")
+    WEATHER_API_KEY: str = os.getenv("WEATHER_API_KEY")
 
 config = Config()
