@@ -17,7 +17,7 @@ async def cmd_about(message: Message):
         "Напиши название города или нажми кнопку внизу:" ,
         reply_markup=get_main_reply_keyboard())
 
-@router.message(F.text == "ℹ️ О боте")
+@router.message(Command("start"))
 async def about_bot(message: Message):
     about_text = (
         "🌤️ *SkyPulse Bot v2.0*\n\n"
