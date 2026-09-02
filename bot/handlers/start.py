@@ -29,6 +29,22 @@ async def about_bot(message: Message):
     )
     await message.answer(about_text, parse_mode = "Markdown")
 
+
+# <-- НОВЫЙ обработчик для текстовой команды "о боте"
+@router.message(lambda message: message.text is not None and message.text.strip().lower() in ("о боте", "о боте?"))
+async def about_bot_text(message: Message):
+    about_text = (
+        "🌤️ *SkyPulse Bot v2.0*\n\n"
+        "Умный погодный ассистент:\n"
+        "• Точный прогноз в любой точке мира и по GPS 📍\n"
+        "• Автоматическая инфографика и графики на 24 часа 📊\n"
+        "• Подробные данные о ветре и советы по одежде 👕\n\n"
+        "👨‍💻 Разработчик: @MaKsIm196E"
+    )
+    await message.answer(about_text, parse_mode="Markdown")
+# <-- Конец нового обработчика
+
+
 @router.message(F.text == "⭐ Избранное")
 async def cmd_favorites(message: Message):
     favorites = await get_user_favorites(message.from_user.id)
@@ -52,3 +68,4 @@ async def send_db_backup(message: Message):
     await message.answer_document(
         document = db_file, caption = "🗄️ Актуальная база данных прямо с сервера!"
     )
+    
